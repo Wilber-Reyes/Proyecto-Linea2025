@@ -18,7 +18,7 @@ Gestor de base de datos:
 MySql
 
 ## Vistas principal
-![alt text](ima.pg)
+![alt text](ima.png)
 ## Vista de accesos
 ![alt text](ima2.png)
 ## Vista dashboard(panel)
