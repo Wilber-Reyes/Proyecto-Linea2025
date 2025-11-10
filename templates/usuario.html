@@ -213,7 +213,7 @@
             <tbody>
                 {% for u in usuarios %}
                 <tr>
-                    <td>{{ u.id }}</td>
+                    <td>{{ loop.index}}</td>
                     <td>{{ u.nombre }}</td>
                     <td>{{ u.email }}</td>
                     <td>{{ u.password }}</td>
