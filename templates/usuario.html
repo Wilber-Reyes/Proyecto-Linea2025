@@ -1,0 +1,291 @@
+{% extends 'baseadmin.html' %}
+{% block title %}Usuarios{% endblock %}
+{% block body %}
+
+<!--MENSAJE DE ALERTA SweetAlert2-->
+
+<!--  <script src="{{url_for('static', filename='/js/script.js')}}"></script> -->
+<script src="DataTables/datatables.min.js"></script>
+
+<!-- Mensaje de ALERTA SALIR DEL SISTEMA -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Confirmación logout
+        const logoutBtn = document.querySelector('a[href="{{ url_for("logout") }}"]');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: '¿Cerrar sesión?',
+                    text: 'Se cerrará tu sesión actual',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, salir',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) window.location.href = logoutBtn.href;
+                });
+            });
+        }
+
+        // Confirmar Guardar nuevo usuario (form action contiene crearusuario)
+        document.querySelectorAll('form[action*="crearusuario"] .btn-info[type="submit"]').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const form = btn.closest('form');
+                Swal.fire({
+                    title: '¿Guardar nuevo usuario?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, guardar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) form.submit();
+                });
+            });
+        });
+
+        // Confirmar Cancelar (modales)
+        document.querySelectorAll('.btn-secondary[data-bs-dismiss="modal"]').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const modalEl = btn.closest('.modal');
+                Swal.fire({
+                    title: '¿Cancelar sin guardar?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, cancelar',
+                    cancelButtonText: 'Volver'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // cerrar modal con bootstrap
+                        const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                        modalInstance.hide();
+                    }
+                });
+            });
+        });
+
+        // Confirmar eliminar (botones .btn-danger)
+        document.querySelectorAll('a.btn-danger').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: '¿Eliminar este usuario?',
+                    text: 'Esta acción no se puede deshacer',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) window.location.href = link.href;
+                });
+            });
+        });
+    });
+
+    // ✅ Confirmar guardar cambios en edición (usando onsubmit en el formulario)
+    function confirmarGuardarEdicion(e, form) {
+        e.preventDefault();
+        Swal.fire({
+            title: '¿Guardar cambios?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) form.submit();
+        });
+        return false;
+    }
+</script>
+<div class="container p-5 mt-3">
+    <div class="alert alert-info text-center py-4">
+        <!-- Botón que abre el modal flotante -->
+        <div class="text-end">
+            <button type="button" class="btn btn-info w-25" data-bs-toggle="modal" data-bs-target="#registroModal"
+                data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="boton-panel"
+                title="Añadir usuarios"> Agregar Usuario
+            </button>
+        </div>
+    </div>
+    <!-- Modal flotante para registro -->
+    <div class="modal fade" id="registroModal" tabindex="-1" aria-labelledby="registroModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white text-center">
+                    <h5 class="modal-title w-100" id="registroModalLabel">Registro de Usuarios</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <form id="formRegistroUsuario" action="{{ url_for('crearusuario') }}" method="POST" autocomplete="off">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <input type="text" name="nombre" class="form-control" placeholder="Nombre Completo"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" name="email" class="form-control" placeholder="Correo Electrónico"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" name="password" class="form-control" placeholder="Contraseña"
+                                required>
+                        </div>
+                    </div>
+                    <!-- Footer registro -->
+                    <div class="modal-footer justify-content-between">
+                        <button type="submit" class="btn btn-info" id="btnGuardarUsuario" data-bs-toggle="tooltip"
+                            data-bs-placement="bottom" data-bs-custom-class="boton-panel"
+                            title="Guardar nuevos usuarios">Guardar</button>
+                    </div>
+                    <script>
+                        // Registro de usuario por AJAX
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const form = document.getElementById('formRegistroUsuario');
+                            if (form) {
+                                form.addEventListener('submit', function (e) {
+                                    e.preventDefault();
+                                    const formData = new FormData(form);
+                                    fetch(form.action, {
+                                        method: 'POST',
+                                        body: formData,
+                                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                                    })
+                                        .then(async resp => {
+                                            if (!resp.ok) {
+                                                const data = await resp.json();
+                                                throw new Error(data.message || 'Error');
+                                            }
+                                            return resp.json();
+                                        })
+                                        .then(data => {
+                                            Swal.fire('¡Éxito!', data.message, 'success');
+                                            // Cerrar modal
+                                            const modal = bootstrap.Modal.getInstance(document.getElementById('registroModal'));
+                                            if (modal) modal.hide();
+                                            // Limpiar formulario
+                                            form.reset();
+                                            // Agregar usuario a la tabla
+                                            if (data.usuario) {
+                                                const tbody = document.querySelector('table.table tbody');
+                                                if (tbody) {
+                                                    const tr = document.createElement('tr');
+                                                    tr.innerHTML = `
+                                <td>${data.usuario.id}</td>
+                                <td>${data.usuario.nombre}</td>
+                                <td>${data.usuario.email}</td>
+                                <td>${data.usuario.password}</td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#editarModal${data.usuario.id}">Editar</button>
+                                    <a href="/eliminar_usuario/${data.usuario.id}" class="btn btn-danger btn-sm" onclick="confirmarEliminar(event, this)">Eliminar</a>
+                                </td>
+                            `;
+                                                    tbody.appendChild(tr);
+                                                }
+                                            }
+                                        })
+                                        .catch(err => {
+                                            Swal.fire('Error', err.message, 'error');
+                                        });
+                                });
+                            }
+                        });
+                    </script>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de usuarios -->
+    <div class="row text-center">
+        <h2 class="mb-3">Lista de Usuarios</h2>
+        <table class="table table-bordered table-striped">
+            <thead class="table-info">
+                <tr>
+                    <th>N°</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in usuarios %}
+                <tr>
+                    <td>{{ u.id }}</td>
+                    <td>{{ u.nombre }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.password }}</td>
+                    <td>
+                        <!-- Botón que abre el modal de edición -->
+                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#editarModal{{ u.id }}" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            data-bs-custom-class="boton-panel" title="Iditar usuarios">
+                            Editar
+                        </button>
+                        <a href="{{ url_for('eliminar_usuario', id=u.id) }}" class="btn btn-danger btn-sm"
+                            onclick="confirmarEliminar(event, this)" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            data-bs-custom-class="boton-panel" title="Eliminar usuarios">Eliminar</a>
+                    </td>
+                </tr>
+
+                <!-- Modal de edición para el usuario {{ u.id }} -->
+                <div class="modal fade" id="editarModal{{ u.id }}" tabindex="-1"
+                    aria-labelledby="editarModalLabel{{ u.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <form action="{{ url_for('editar_usuario', id=u.id) }}" method="POST"
+                                onsubmit="return confirmarGuardarEdicion(event, this);">
+                                <div class="modal-header bg-info text-white">
+                                    <h5 class="modal-title" id="editarModalLabel{{ u.id }}">Editar Usuario</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Cerrar"></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label>Nombre</label>
+                                        <input type="text" name="nombre" class="form-control" value="{{ u.nombre }}"
+                                            required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label>Email</label>
+                                        <input type="email" name="email" class="form-control" value="{{ u.email }}"
+                                            required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label>Contraseña</label>
+                                        <input type="text" name="password" class="form-control" value="{{ u.password }}"
+                                            required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label>Rol</label>
+                                        <select name="id_rol" class="form-control">
+                                            <option value="1" {% if u.id_rol==1 %}selected{% endif %}>
+                                                Administrador</option>
+                                            <option value="2" {% if u.id_rol==2 %}selected{% endif %}>Usuario
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer justify-content-between">
+                                    <button type="submit" class="btn btn-info" data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom" data-bs-custom-class="boton-panel"
+                                        title="Actualizar usuarios">Guardar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

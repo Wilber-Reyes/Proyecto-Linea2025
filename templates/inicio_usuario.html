@@ -1,0 +1,19 @@
+{% extends 'baseadmin.html' %}
+{% block title %}Panel Usuario{% endblock %}
+
+{% block body %}
+<div class="container p-5 mt-3">
+    <h2 class="text-center alert alert-info py-4">
+        Bienvenido {{ nombre }}
+    </h2>
+
+    <p class="text-center fs-4">Has iniciado sesión como usuario normal.</p>
+
+    <div class="text-center mt-4">
+        <a class="btn btn-outline-success btn-sm" href="{{ url_for('logout') }}" data-bs-toggle="tooltip"
+            data-bs-placement="bottom" data-bs-custom-class="boton-panel" title="Cerrar sesión y salir del panel">
+            SALIR
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% block title %}PulperiaInventario+{% endblock title %}
+{% block body %}
+
+
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="{{ url_for('static', filename='imagenes/imagen1.png') }}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+            <img src="{{ url_for('static', filename='imagenes/imagen2.png') }}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+            <img src="{{ url_for('static', filename='imagenes/imagen3.png') }}" class="d-block w-100" alt="...">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+        data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+        data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+        data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
+</div>
+
+<!-- Contenedor de columnas pie de pagina -->
+<div class="container mt-5">
+    <div class="row">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Informacion</h2>
+        </div>
+        <div class="col-sm-4">
+            <h3>Gestión de inventario</h3>
+            <p style="text-align: justify;"> Control de la cantidad, precio y estado de los productos disponibles en la pulpería.
+            </p>
+        </div>
+        <div class="col-sm-4">
+            <h3>Movimiento de productos</h3>
+            <p style="text-align: justify;"> Registro de entradas (compras al proveedor) y salidas (ventas a clientes).
+            </p>
+        </div>
+        <div class="col-sm-4">
+            <h3>Control de stock</h3>
+            <p style="text-align: justify;"> Supervisión del inventario para evitar quiebres o exceso de productos.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <!-- 1 -->
+        <div class="col">
+            <div class="card h-100 text-center shadow">
+                <img src="static/imagenes/comprass.png" class="card-img-top p-3 img-fluid w-50 mx-auto" alt="Ventas">
+                <div class="card-body">
+                    <h5 class="card-title">Registro de productos</h5>
+                    <p class="card-text text-justify">
+                        Nombre, categoría, cantidad, precio de compra y precio de venta.
+                    </p>
+                </div>
+                <div class="card-footer bg-white border-0">
+                    <a href="#" class="btn btn-primary">Ver más...</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="col">
+            <div class="card h-100 text-center shadow">
+                <img src="static/imagenes/ls.png" class="card-img-top p-3 img-fluid w-50 mx-auto" alt="Productos">
+                <div class="card-body">
+                    <h5 class="card-title">Gestión de stock</h5>
+                    <p class="card-text text-justify">
+                        Actualización automática cuando se realizan ventas o se agregan nuevos productos.
+                    </p>
+                </div>
+                <div class="card-footer bg-white border-0">
+                    <a href="#" class="btn btn-primary">Ver más...</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="col">
+            <div class="card h-100 text-center shadow">
+                <img src="static/imagenes/linea.png" class="card-img-top p-3 img-fluid w-50 mx-auto" alt="Carrito">
+                <div class="card-body">
+                    <h5 class="card-title">Alertas de inventario bajo</h5>
+                    <p class="card-text text-justify">
+                        Aviso cuando un producto está por agotarse.
+                </div>
+                <div class="card-footer bg-white border-0">
+                    <a href="#" class="btn btn-primary">Ver más...</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Pie de página -->
+<hr>
+<style>
+    a.text-white:hover {
+        color: #0d6efd !important;
+        /* Cambia este color por el que prefieras */
+        text-decoration: underline;
+    }
+</style>
+<footer class="bg-dark text-white pt-4">
+    <div class="container">
+        <div class="row">
+            <!-- Marca y redes -->
+            <div class="col-md-6 mb-3">
+                <h5>ListCompra+</h5>
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="https://www.youtube.com/" target="_blank" class="text-white text-decoration-none">
+                            📺 YouTube
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.facebook.com/" target="_blank" class="text-white text-decoration-none">
+                            📘 Facebook
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Recursos -->
+            <div class="col-md-6 mb-3">
+                <h5>Recursos</h5>
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="/acercade" class="text-white text-decoration-none">Acerca de</a>
+                    </li>
+                    <li>
+                        <a href="/contacto_post" class="text-white text-decoration-none">Contacto</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Derechos de autor -->
+    <div class="bg-secondary text-center py-3 mt-4">
+        <small>&copy; 2025 PulperiaInventario+. Todos los derechos reservados.</small>
+    </div>
+</footer>
+{% endblock body %}

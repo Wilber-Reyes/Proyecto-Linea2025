@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block titulo %}Registro{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+  <div class="row shadow rounded overflow-hidden">
+
+    <!-- Panel izquierdo: Bienvenida -->
+    <div class="col-md-6 bg-primary text-white d-flex flex-column justify-content-center align-items-center p-4">
+      <img src="{{ url_for('static', filename='imagenes/compra.png') }}" alt="Ilustración" class="img-fluid mb-4"
+        style="max-height: 200px;">
+      <h2 class="text-center">¡Bienvenido!</h2>
+      <p class="text-center">Por favor, ingresa tu información para registrarte.</p>
+      <a href="{{ url_for('login') }}" class="btn btn-light mt-2" data-bs-toggle="tooltip" data-bs-placement="bottom"
+        data-bs-custom-class="boton-panel" title="Inicio">Iniciar Sesión</a>
+    </div>
+
+    <!-- Panel derecho: Formulario de registro -->
+    <div class="col-md-6 bg-light d-flex flex-column justify-content-center p-4">
+      <h3 class="mb-3 text-center text-primary">Crea tu cuenta</h3>
+
+      <!-- Mensaje de éxito -->
+      {% if mensaje %}
+      <div class="alert alert-success text-center mt-3">{{ mensaje }}</div>
+      {% endif %}
+
+      <!-- Botón Google -->
+      <button type="button" class="btn btn-outline-secondary mb-3 d-flex align-items-center justify-content-center">
+        <img src="{{ url_for('static', filename='imagenes/google.png') }}" alt="Google"
+          style="height: 20px; margin-right: 8px;">
+        Registrare con Google
+      </button>
+
+      <p class="text-center text-muted mb-3">o usa tu correo electrónico</p>
+
+      <!-- Formulario -->
+      <form action="{{ url_for('crearusuario') }}" method="POST">
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre Completo</label>
+          <input type="text" class="form-control" id="nombre" name="nombre" required title="Ingresa tu nombre completo"
+            data-bs-toggle="tooltip" data-bs-placement="right">
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Correo Electrónico</label>
+          <input type="email" class="form-control" id="email" name="email" required title="Ingresa un correo válido"
+            data-bs-toggle="tooltip" data-bs-placement="right">
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="password" name="password" required
+            title="Debe tener al menos 8 caracteres" data-bs-toggle="tooltip" data-bs-placement="right">
+        </div>
+
+        <button type="submit" class="btn btn-success">Registrar</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,261 @@
+{% extends 'baseadmin.html' %}
+{% block title %}Listar producto{% endblock %}
+
+{% block body %}
+<!-- 🔹 Bootstrap 5 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" />
+
+<!-- 🔹 DataTables + Buttons -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css" />
+
+<!-- 🔹 jQuery y dependencias -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+
+<!-- 🔹 DataTables + Buttons -->
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+
+<!-- 🔹 Exportación -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
+
+<div class="container p-5 mt-3">
+    <h2 class="text-center alert alert-danger py-4">Lista de Productos</h2>
+    <div class="row">
+        <div class="container-fluid mt-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <table id="tablaProductos" class="table table-bordered table-striped">
+                        <thead class="table-info">
+                            <tr>
+                                <th>Código</th>
+                                <th>Categoría</th>
+                                <th>Cantidad</th>
+                                <th>Precio Compra</th>
+                                <th>Precio Venta</th>
+                                <th>Proveedor</th>
+                                <th>Fecha Compra</th>
+                                <th>Fecha Vencimiento</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in productos %}
+                            <tr>
+                                <td>{{ p.codigo }}</td>
+                                <td>{{ p.categoria }}</td>
+                                <td>{{ p.cantidad }}</td>
+                                <td>{{ p.precio_compra }}</td>
+                                <td>{{ p.precio_venta }}</td>
+                                <td>{{ p.proveedor }}</td>
+                                <td>{{ p.fecha_compra }}</td>
+                                <td>{{ p.fecha_vencimiento }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-success btn-editar" data-id="{{ p.id }}"
+                                        data-codigo="{{ p.codigo }}" data-nombre="{{ p.nombre }}"
+                                        data-categoria="{{ p.categoria }}" data-cantidad="{{ p.cantidad }}"
+                                        data-precio_compra="{{ p.precio_compra }}"
+                                        data-precio_venta="{{ p.precio_venta }}" data-proveedor="{{ p.proveedor }}"
+                                        data-fecha_compra="{{ p.fecha_compra }}"
+                                        data-fecha_vencimiento="{{ p.fecha_vencimiento }}" data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom" data-bs-custom-class="boton-panel"
+                                        title="Editar producto">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+
+                                    <button type="button" class="btn btn-sm btn-danger btn-eliminar"
+                                        data-url="{{ url_for('eliminar_producto', id=p.id) }}" data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom" data-bs-custom-class="boton-panel"
+                                        title="Eliminar producto">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 🔹 MODAL EDITAR -->
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <form method="POST" id="formEditar">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalEditarLabel">Editar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body row g-3">
+                    <input type="hidden" name="id" id="edit-id">
+                    <div class="col-md-4"><input type="text" name="codigo" id="edit-codigo" class="form-control"
+                            placeholder="Código" required></div>
+                    <div class="col-md-4"><input type="text" name="nombre" id="edit-nombre" class="form-control"
+                            placeholder="Nombre" required></div>
+                    <div class="col-md-4"><input type="text" name="categoria" id="edit-categoria" class="form-control"
+                            placeholder="Categoría" required></div>
+                    <div class="col-md-3"><input type="number" name="cantidad" id="edit-cantidad" class="form-control"
+                            placeholder="Cantidad" required></div>
+                    <div class="col-md-3"><input type="number" step="0.01" name="precio_compra" id="edit-precio_compra"
+                            class="form-control" placeholder="Precio Compra" required></div>
+                    <div class="col-md-3"><input type="number" step="0.01" name="precio_venta" id="edit-precio_venta"
+                            class="form-control" placeholder="Precio Venta" required></div>
+                    <div class="col-md-3"><input type="text" name="proveedor" id="edit-proveedor" class="form-control"
+                            placeholder="Proveedor"></div>
+                    <div class="col-md-3"><input type="date" name="fecha_compra" id="edit-fecha_compra"
+                            class="form-control"></div>
+                    <div class="col-md-3"><input type="date" name="fecha_vencimiento" id="edit-fecha_vencimiento"
+                            class="form-control"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="confirmarEdicion('formEditar')"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="boton-panel"
+                        title="Actualizar productos">Guardar
+                        cambios</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 🔹 JS FUNCIONALIDAD -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Confirmación de eliminación
+    function confirmarEliminacion(url) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+
+    // Confirmación de edición
+    function confirmarEdicion(formId) {
+        Swal.fire({
+            title: '¿Guardar cambios?',
+            text: "Se actualizará la información del producto.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#198754',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(formId).submit();
+            }
+        });
+    }
+
+    // Activar modal con datos
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.btn-eliminar').forEach(btn => {
+            btn.addEventListener('click', () => confirmarEliminacion(btn.dataset.url));
+        });
+
+        document.querySelectorAll('.btn-editar').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Llenar campos del formulario
+                document.getElementById('edit-id').value = btn.dataset.id;
+                document.getElementById('edit-codigo').value = btn.dataset.codigo;
+                document.getElementById('edit-nombre').value = btn.dataset.nombre;
+                document.getElementById('edit-categoria').value = btn.dataset.categoria;
+                document.getElementById('edit-cantidad').value = btn.dataset.cantidad;
+                document.getElementById('edit-precio_compra').value = btn.dataset.precio_compra;
+                document.getElementById('edit-precio_venta').value = btn.dataset.precio_venta;
+                document.getElementById('edit-proveedor').value = btn.dataset.proveedor;
+                document.getElementById('edit-fecha_compra').value = btn.dataset.fecha_compra;
+                document.getElementById('edit-fecha_vencimiento').value = btn.dataset.fecha_vencimiento;
+
+                // Actualizar acción del formulario
+                const form = document.getElementById('formEditar');
+                form.action = `/editar/${btn.dataset.id}`;
+
+                // Mostrar el modal
+                const modalElement = document.getElementById('modalEditar');
+                const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+                modal.show();
+            });
+        });
+
+    });
+
+    // Inicialización de DataTable con botones
+    $(document).ready(function () {
+        var table = $('#tablaProductos').DataTable({
+            dom: "<'row mb-3'<'col-12 d-flex flex-nowrap align-items-center justify-content-between'<'d-flex'B><'ms-auto'f>>>" +
+                "<'row'<'col-12'tr>>" +
+                "<'row mt-3'<'col-md-5'i><'col-md-7'p>>",
+            buttons: [
+                {
+                    extend: 'copy',
+                    className: 'btn btn-primary btn-sm px-3 py-2 rounded me-2',
+                    text: '<i class="bi bi-clipboard me-1"></i> Copiar',
+                    titleAttr: 'Copiar'
+                },
+                {
+                    extend: 'excel',
+                    className: 'btn btn-success btn-sm px-3 py-2 rounded me-2',
+                    text: '<i class="bi bi-file-earmark-excel me-1"></i> Excel',
+                    titleAttr: 'Exportar Excel'
+                },
+                {
+                    extend: 'pdf',
+                    className: 'btn btn-danger btn-sm px-3 py-2 rounded me-2',
+                    text: '<i class="bi bi-file-earmark-pdf me-1"></i> PDF',
+                    titleAttr: 'Exportar PDF'
+                },
+                {
+                    extend: 'print',
+                    className: 'btn btn-warning btn-sm px-3 py-2 rounded me-2',
+                    text: '<i class="bi bi-printer me-1"></i> Imprimir',
+                    titleAttr: 'Imprimir tabla'
+                },
+                {
+                    extend: 'colvis',
+                    className: 'btn btn-info btn-sm px-3 py-2 rounded',
+                    text: '<i class="bi bi-layout-three-columns me-1"></i> Columnas',
+                    titleAttr: 'Mostrar/Ocultar columnas'
+                }
+            ],
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+            }
+        });
+        // Activar tooltips de Bootstrap en botones de exportación
+        setTimeout(() => {
+            const exportButtons = document.querySelectorAll('.dt-buttons button');
+            exportButtons.forEach(btn => {
+                btn.setAttribute('data-bs-toggle', 'tooltip');
+                btn.setAttribute('data-bs-placement', 'bottom');
+                btn.setAttribute('data-bs-custom-class', 'boton-panel');
+                bootstrap.Tooltip.getOrCreateInstance(btn);
+            });
+        }, 500);
+
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block body %}
+<!-- MENSAJE DE ALERTA FLASH -->
+{% with msg = get_flashed_messages(with_categories=True) %}
+{% if msg %}
+{% for category, message in msg %}
+<div class="alert alert-{{ category }} alert-dismissible fade show mt-3 container" role="alert">
+  {{ message }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="container mt-5">
+  <div class="row shadow rounded overflow-hidden">
+
+    <!-- Panel izquierdo: Bienvenida -->
+    <div class="col-md-6 bg-primary text-white d-flex flex-column justify-content-center align-items-center p-4">
+      <img src="{{ url_for('static', filename='imagenes/compra.png') }}" alt="Ilustración" class="img-fluid mb-4"
+        style="max-height: 200px;">
+      <h3 class="text-center">¡Bienvenido Nuevamente!</h3>
+      <p class="text-center">¿Aún no tienes una cuenta? Regístrate aquí</p>
+      <a href="{{ url_for('registro') }}" class="btn btn-success mt-2" data-bs-toggle="tooltip"
+        data-bs-placement="bottom" data-bs-custom-class="boton-panel" title="Registro de acceso">Registrarse</a>
+    </div>
+
+    <!-- Panel derecho: Login -->
+    <div class="col-md-6 bg-light d-flex flex-column justify-content-center p-4">
+      <h4 class="mb-3 text-center">Iniciar Sesión</h4>
+      <button class="btn btn-outline-secondary mb-3 d-flex align-items-center justify-content-center">
+        <img src="{{ url_for('static', filename='imagenes/google.png') }}" alt="Google"
+          style="height: 20px; margin-right: 8px;">
+        Iniciar sesión con Google
+      </button>
+      <p class="text-center text-muted">O inicia sesión con tu cuenta</p>
+
+      <form method="POST" action="{{ url_for('accesologin') }}">
+        <div class="mb-3">
+          <label for="email" class="form-label">Correo electrónico</label>
+          <input type="email" class="form-control" id="email" name="email" required data-bs-toggle="tooltip"
+            data-bs-placement="right" data-bs-custom-class="boton-panel" title="Ingresa tu correo electrónico">
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="password" name="password" required data-bs-toggle="tooltip"
+            data-bs-placement="right" data-bs-custom-class="boton-panel" title="Ingresa tu contraseña">
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+          {{ error }}
+        </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary w-100" data-bs-toggle="tooltip" data-bs-placement="bottom"
+          data-bs-custom-class="boton-panel" title="Inicia sesión con tu cuenta">Iniciar Sesión</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

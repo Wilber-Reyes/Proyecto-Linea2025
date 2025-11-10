@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Contacto{% endblock titulo %}
+
+{% block body %}
+<div class="container my-5">
+  <h1 class="mb-4">Formulario de Contacto</h1>
+
+  {% if usuario %}
+    <div class="alert alert-info">
+      <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
+      <p><strong>Correo Electrónico:</strong> {{ usuario.email }}</p>
+      <p><strong>Mensaje:</strong> {{ usuario.mensaje }}</p>
+    </div>
+  {% endif %}
+
+  <form action="" method="get">
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Correo Electrónico:</label>
+      <input type="email" id="email" name="email" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label for="mensaje" class="form-label">Mensaje:</label>
+      <textarea id="mensaje" name="mensaje" class="form-control" rows="4"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enviar</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+.boton-panel {
+  background-color: #025373;       /* Azul oscuro */
+  color: #e6e6e6;                  /* Gris claro para texto */
+  border: 2px solid #049DBF;       /* Azul claro como borde */
+  padding: 8px 16px;                /* Tamaño cómodo */
+  font-size: 14px;
+  border-radius: 6px;               /* Bordes suaves */
+  font-weight: 500;
+  text-align: center;
+  box-shadow: none;                  /* Sin sombra */
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* transición solo colores */
+  cursor: pointer;
+}
+
+.boton-panel:hover {
+  background-color: #049DBF;       /* Azul claro al pasar el mouse */
+  border-color: #025373;           /* Inversión de borde */
+  color: #ffffff;                  /* Texto blanco */
+}
+
+.boton-panel:disabled {
+  background-color: #e6e6e6;
+  color: #666666;
+  border-color: #cccccc;
+  cursor: not-allowed;
+}

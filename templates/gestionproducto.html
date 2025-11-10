@@ -1,0 +1,131 @@
+{% extends 'baseadmin.html' %}
+{% block title %}gestion producto{% endblock %}
+{% block body %}
+
+<!-- Contenido principal -->
+<div class="container mt-4">
+    <div class="row">
+
+        <!-- Panel izquierdo: Agregar Producto -->
+        <div class="col-md-4">
+            <div class="card shadow position-sticky top-0">
+                <div class="card-header bg-success text-white text-center">
+                    Agregar Producto
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="/agregar">
+                        <!-- Identificación -->
+                        <div class="mb-3">
+                            <label for="codigo">Código/ID</label>
+                            <input type="text" class="form-control" name="codigo" data-bs-toggle="tooltip"
+                                data-bs-placement="right" data-bs-custom-class="boton-panel"
+                                title="Ingresa el código o ID del producto" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" class="form-control" name="nombre" data-bs-toggle="tooltip"
+                                data-bs-placement="right" data-bs-custom-class="boton-panel" title="Nombre del producto"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="categoria">Categoría</label>
+                            <input type="text" class="form-control" name="categoria" data-bs-toggle="tooltip"
+                                data-bs-placement="right" data-bs-custom-class="boton-panel"
+                                title="Categoría a la que pertenece el producto" required>
+                        </div>
+
+                        <!-- Stock y control -->
+                        <div class="mb-3">
+                            <label for="cantidad">Cantidad</label>
+                            <input type="number" class="form-control" name="cantidad" data-bs-toggle="tooltip"
+                                data-bs-placement="right" data-bs-custom-class="boton-panel"
+                                title="Cantidad disponible en inventario" required>
+                        </div>
+
+                        <!-- Datos financieros -->
+                        <div class="mb-3">
+                            <label for="precio_compra">Precio Compra</label>
+                            <input type="number" step="0.01" class="form-control" name="precio_compra"
+                                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="boton-panel"
+                                title="Precio de compra del producto" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="precio_venta">Precio Venta</label>
+                            <input type="number" step="0.01" class="form-control" name="precio_venta"
+                                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="boton-panel"
+                                title="Precio de venta al público" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="proveedor">Proveedor</label>
+                            <input type="text" class="form-control" name="proveedor" data-bs-toggle="tooltip"
+                                data-bs-placement="right" data-bs-custom-class="boton-panel"
+                                title="Nombre del proveedor del producto">
+                        </div>
+                        <div class="mb-3">
+                            <label for="fecha_compra">Fecha de Compra</label>
+                            <input type="date" class="form-control" name="fecha_compra" data-bs-toggle="tooltip"
+                                data-bs-placement="right" data-bs-custom-class="boton-panel"
+                                title="Fecha en la que se adquirió el producto">
+                        </div>
+                        <div class="mb-3">
+                            <label for="fecha_vencimiento">Fecha de Vencimiento</label>
+                            <input type="date" class="form-control" name="fecha_vencimiento" data-bs-toggle="tooltip"
+                                data-bs-placement="right" data-bs-custom-class="boton-panel"
+                                title="Fecha de caducidad del producto">
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100" data-bs-toggle="tooltip"
+                            data-bs-placement="bottom" data-bs-custom-class="boton-panel"
+                            title="Agregar este producto al inventario">
+                            Agregar Producto
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel derecho: Lista de productos -->
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    Lista de Productos
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <thead class="table-info">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Cantidad</th>
+                                <th>Precio Compra</th>
+                                <th>Precio Venta</th>
+                                <th>Proveedor</th>
+                                <th>Fecha Compra</th>
+                                <th>Fecha Venc.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for producto in productos %}
+                            <tr>
+                                <td>{{ producto.codigo }}</td>
+                                <td>{{ producto.nombre }}</td>
+                                <td>{{ producto.categoria }}</td>
+                                <td>{{ producto.cantidad }}</td>
+                                <td>{{ producto.precio_compra }}</td>
+                                <td>{{ producto.precio_venta }}</td>
+                                <td>{{ producto.proveedor }}</td>
+                                <td>{{ producto.fecha_compra }}</td>
+                                <td>{{ producto.fecha_vencimiento }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
