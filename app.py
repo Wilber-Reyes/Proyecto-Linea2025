@@ -36,10 +36,6 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated
 
-@app.route('/')
-def home():
-    return "¡Aplicación Flask desplegada correctamente en Render!"
-
 # -------------------------------
 # LOGIN
 # -------------------------------
@@ -403,7 +399,3 @@ def acercade():
 @app.route('/index')
 def index():
     return render_template('index.html')
-
-
-if __name__ == '__main__':
-    app.run(debug=True, port=8000)
