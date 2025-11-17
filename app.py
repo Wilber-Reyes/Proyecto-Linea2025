@@ -36,6 +36,10 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated
 
+@app.route('/')
+def home():
+    return "¡Aplicación Flask desplegada correctamente en Render!"
+
 # -------------------------------
 # LOGIN
 # -------------------------------
