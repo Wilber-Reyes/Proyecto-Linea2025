@@ -34,7 +34,7 @@
       <p class="text-center text-muted mb-3">o usa tu correo electrónico</p>
 
       <!-- Formulario -->
-      <form action="{{ url_for('crearusuario') }}" method="POST">
+      <form action="{{ url_for('crearusuario') }}" method="POST" id="formRegistro">
         <div class="mb-3">
           <label for="nombre" class="form-label">Nombre Completo</label>
           <input type="text" class="form-control" id="nombre" name="nombre" required title="Ingresa tu nombre completo"
@@ -58,4 +58,49 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("formRegistro");
+  if (!form) return;
+
+  const reglas = {
+    nombre: {
+      regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/,
+      vacio: "El nombre no puede estar vacío.",
+      invalido: "El nombre solo puede contener letras y espacios."
+    },
+    email: {
+      regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      vacio: "El correo electrónico no puede estar vacío.",
+      invalido: "El correo electrónico no tiene un formato válido."
+    },
+    password: {
+      regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/,
+      vacio: "La contraseña no puede estar vacía.",
+      invalido: "La contraseña debe tener al menos 8 caracteres, incluir una letra mayúscula, una letra minúscula, un número y un carácter especial."
+    }
+  };
+
+  form.addEventListener("submit", (e) => {
+    for (const campo in reglas) {
+      const input = document.getElementById(campo);
+      const { regex, vacio, invalido } = reglas[campo];
+
+      if (!input.value.trim()) {
+        Swal.fire("Error", vacio, "error");
+        e.preventDefault();
+        return;
+      }
+
+      if (!regex.test(input.value)) {
+        Swal.fire("Error", invalido, "error");
+        e.preventDefault();
+        return;
+      }
+    }
+  });
+});
+</script>
+
 {% endblock %}

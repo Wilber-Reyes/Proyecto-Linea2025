@@ -288,4 +288,41 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const formRegistro = document.getElementById('formRegistroUsuario');
+
+        if (formRegistro) {
+            formRegistro.addEventListener('submit', function (e) {
+                const nombre = formRegistro.querySelector('input[name="nombre"]');
+                const email = formRegistro.querySelector('input[name="email"]');
+
+                // Validar nombre
+                const nombreRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/;
+                if (!nombre.value.trim()) {
+                    e.preventDefault();
+                    Swal.fire('Error', 'El nombre no puede estar vacío.', 'error');
+                    return;
+                } else if (!nombreRegex.test(nombre.value)) {
+                    e.preventDefault();
+                    Swal.fire('Error', 'El nombre solo puede contener letras y espacios.', 'error');
+                    return;
+                }
+
+                // Validar correo electrónico
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email.value.trim()) {
+                    e.preventDefault();
+                    Swal.fire('Error', 'El correo electrónico no puede estar vacío.', 'error');
+                    return;
+                } else if (!emailRegex.test(email.value)) {
+                    e.preventDefault();
+                    Swal.fire('Error', 'El correo electrónico no tiene un formato válido.', 'error');
+                    return;
+                }
+            });
+        }
+    });
+</script>
+
 {% endblock %}
